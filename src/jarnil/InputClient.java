@@ -17,7 +17,8 @@ import java.util.Scanner;
  *
  * @author alif.sip
  */
-public class InputClient {
+public class InputClient 
+{
 
     /**
      * @param args the command line arguments
@@ -27,7 +28,8 @@ public class InputClient {
     static private HandleMessage handleMessage =new HandleMessage();;
     //handleMessage = 
     
-    public static void main(String[] args) throws UnknownHostException, InterruptedException {
+    public static void main(String[] args) throws UnknownHostException, InterruptedException 
+    {
         // Get the address that we are going to connect to.
         InetAddress addr = InetAddress.getByName(INET_ADDR);
         String msg;
@@ -36,21 +38,15 @@ public class InputClient {
         // Open a new DatagramSocket, which will be used to send the data.
         try (DatagramSocket serverSocket = new DatagramSocket()) 
         {
+            Scanner in = new Scanner(System.in);
             while(true) 
             {
-                
-                Scanner in = new Scanner(System.in);
                 msg = in.nextLine();
-
-                // Create a packet that will contain the data
-                // (in the form of bytes) and send it.
-                DatagramPacket msgPacket = new DatagramPacket(msg.getBytes(),msg.getBytes().length, addr, PORT);
-                serverSocket.send(msgPacket);
-     
-                //System.out.println(msg);
-                Thread.sleep(500);
+                handleMessage.SendMessage(msg, addr);
             }
-        } catch (IOException ex) {
+        } 
+        catch (IOException ex) 
+        {
             ex.printStackTrace();
         }
     }
