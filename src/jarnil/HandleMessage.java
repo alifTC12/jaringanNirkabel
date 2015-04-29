@@ -1,7 +1,11 @@
 package jarnil;
 
 import static jarnil.InputClient.PORT;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
@@ -11,11 +15,6 @@ import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 
 /**
  *
@@ -26,19 +25,19 @@ public class HandleMessage extends Thread
     final static String INET_ADDR = "224.0.0.3";
     final static int PORT = 8888;
     
-    public void SendMessage(String msg, InetAddress addr) throws InterruptedException
+    
+    public void SendMessage(message msg, InetAddress addr) throws InterruptedException
     {
+        
         try (DatagramSocket serverSocket = new DatagramSocket()) 
         {
-           // for(int a=0; a<3; a++)
-            //{
-                // Create a packet that will contain the data
-                // (in the form of bytes) and send it.
-                DatagramPacket msgPacket = new DatagramPacket(msg.getBytes(),msg.getBytes().length, addr, PORT);
-                serverSocket.send(msgPacket);
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            ObjectOutputStream os = new ObjectOutputStream(outputStream);
+            os.writeObject(msg);
+            byte[] data = outputStream.toByteArray();
+            DatagramPacket msgPacket = new DatagramPacket(data,data.length, addr, PORT);
+            serverSocket.send(msgPacket);
      
-                //Thread.sleep(500);
-            //}
         } 
         catch (IOException ex) 
         {
@@ -51,13 +50,7 @@ public class HandleMessage extends Thread
     
     public void run ()
     {
-        // Get the address that we are going to connect to.
-        
-        
-        // Create a buffer of bytes, which will be used to store
-        // the incoming bytes containing the information from the server.
-        // Since the message is small here, 256 bytes should be enough.
-       
+
         InetAddress address = null;
         try 
         {
@@ -67,28 +60,32 @@ public class HandleMessage extends Thread
         {
             Logger.getLogger(HandleMessage.class.getName()).log(Level.SEVERE, null, ex);
         }
-        // Create a new Multicast socket (that will allow other sockets/programs
-        // to join it as well.
+
         try (MulticastSocket clientSocket = new MulticastSocket(PORT))
         {
-            //Joint the Multicast group.
             clientSocket.joinGroup(address);
-     
+            byte[] buf = new byte[256];
             while (true) 
             {
-                // Receive the information and print it.
-                byte[] buf = new byte[256];
                 DatagramPacket msgPacket = new DatagramPacket(buf, buf.length);
                 clientSocket.receive(msgPacket);
-               
-                String msg = new String(buf, 0, buf.length);
-                msg = msg.trim();
-                System.out.println("You have a message: " + msg);
+                
+                byte[] data = msgPacket.getData();
+                ByteArrayInputStream in = new ByteArrayInputStream(data);
+                ObjectInputStream is = new ObjectInputStream(in);
+                
+                message pesan = (message) is.readObject();
+                
+                //String msg = new String(buf, 0, buf.length);
+                //msg = msg.trim();
+                System.out.println("You have a message: " + pesan.getPesan());
             }
         } 
         catch (IOException ex) 
         {
             ex.printStackTrace();
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(HandleMessage.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 }
