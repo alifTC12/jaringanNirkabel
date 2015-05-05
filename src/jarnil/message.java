@@ -5,6 +5,7 @@
 package jarnil;
 
 import java.io.Serializable;
+import java.net.InetAddress;
 import java.util.ArrayList;
 
 /**
@@ -12,21 +13,50 @@ import java.util.ArrayList;
  * @author Fandazky23
  */
 public class message implements Serializable{
-    String pesan;
-    String waktuKirim;
-    ArrayList<String> daftarIP;
+    String pesan; 
+    String pengirim;
+    String penerima;
+    int lompatan;
     message()
     {
         
     }
-    message(String waktuKirim, String pesan)
+    message(String pengirim, String pesan, int lompatan, String penerima)
     {
         this.pesan = pesan;
-        this.waktuKirim = waktuKirim;
+        this.pengirim = pengirim;
+        this.lompatan = lompatan;
+        this.penerima = penerima;
+    }
+
+    public String getPesan() {
+        return pesan;
+    }
+
+    public String getPengirim() {
+        return pengirim;
+    }
+
+    public String getPenerima() {
+        return penerima;
+    }
+
+    public int getLompatan() {
+        return lompatan;
     }
     
-    public String getPesan()
+    public int updateLompatan()
     {
-        return "time: " + waktuKirim +"\n" +"pesan: "+ pesan;
+        return this.lompatan = lompatan - 1;
+    }
+    
+    public String getSemua()
+    {
+        return pengirim + " >> pesan: "+ pesan;
+    }
+    
+    public void lihatLompatan()
+    {
+        System.out.println(this.lompatan);
     }
 }

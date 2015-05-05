@@ -14,16 +14,14 @@ import java.net.UnknownHostException;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-
 /**
  *
  * @author alif.sip
  */
 public class HandleMessage extends Thread
 {
-    final static String INET_ADDR = "224.0.0.3";
-    final static int PORT = 8888;
+    final static String INET_ADDR = "228.5.6.7";
+    final static int PORT = 4321;
     
     
     public void SendMessage(message msg, InetAddress addr) throws InterruptedException
@@ -44,9 +42,36 @@ public class HandleMessage extends Thread
             ex.printStackTrace();
         }
     }
-        
-        
-
+    
+    public void ResendMessage(message msg)
+    {
+        try (DatagramSocket serverSocket = new DatagramSocket()) 
+        {
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            ObjectOutputStream os = new ObjectOutputStream(outputStream);
+            os.writeObject(msg);
+            byte[] data = outputStream.toByteArray();
+            DatagramPacket msgPacket = new DatagramPacket(data,data.length, InetAddress.getByName(INET_ADDR), PORT);
+            serverSocket.send(msgPacket);
+     
+        } 
+        catch (IOException ex) 
+        {
+            ex.printStackTrace();
+        }
+    }
+     
+    public boolean CekPenerima(String penerima, String alamatku)
+    {
+        if(penerima.equalsIgnoreCase(alamatku)) return true;
+        else return false;
+    }
+    
+    public String CekAlamatku() throws UnknownHostException
+    {
+        InetAddress alamatku = InetAddress.getLocalHost();
+        return alamatku.getHostAddress();
+    }
     
     public void run ()
     {
@@ -63,28 +88,41 @@ public class HandleMessage extends Thread
 
         try (MulticastSocket clientSocket = new MulticastSocket(PORT))
         {
+            //System.out.printf("haha");
             clientSocket.joinGroup(address);
             byte[] buf = new byte[256];
             while (true) 
             {
                 DatagramPacket msgPacket = new DatagramPacket(buf, buf.length);
                 clientSocket.receive(msgPacket);
-                
+                //System.out.printf("haha");
                 byte[] data = msgPacket.getData();
                 ByteArrayInputStream in = new ByteArrayInputStream(data);
                 ObjectInputStream is = new ObjectInputStream(in);
                 
                 message pesan = (message) is.readObject();
-                
+                pesan.updateLompatan();
+                if(pesan.getLompatan() > 0 )
+                {
+                    
+                    if (CekPenerima(pesan.getPenerima(), CekAlamatku()) == false)
+                    {
+                        SendMessage(pesan, address);
+                        pesan.lihatLompatan();
+                    }
+                    
+                }
                 //String msg = new String(buf, 0, buf.length);
                 //msg = msg.trim();
-                System.out.println("You have a message: " + pesan.getPesan());
+                System.out.println("You have a message: " + pesan.getSemua());
             }
         } 
         catch (IOException ex) 
         {
             ex.printStackTrace();
         } catch (ClassNotFoundException ex) {
+            Logger.getLogger(HandleMessage.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (InterruptedException ex) {
             Logger.getLogger(HandleMessage.class.getName()).log(Level.SEVERE, null, ex);
         }
     }

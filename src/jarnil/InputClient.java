@@ -24,8 +24,8 @@ import java.util.Scanner;
 public class InputClient 
 {
 
-    final static String INET_ADDR = "224.0.0.3";
-    final static int PORT = 8888;
+    final static String INET_ADDR = "228.5.6.7";
+    final static int PORT = 4321;
     static private HandleMessage handleMessage =new HandleMessage();;
     
     
@@ -43,10 +43,10 @@ public class InputClient
             {
                 msg = in.nextLine();
                 
-                Date waktu = new Date();
-                SimpleDateFormat formatter = new SimpleDateFormat(pola);                
-                message dataPesan = new message(formatter.format(waktu), msg);
-                
+                //Date waktu = new Date();
+                //SimpleDateFormat formatter = new SimpleDateFormat(pola);
+                InetAddress pengirim = InetAddress.getLocalHost();
+                message dataPesan = new message(pengirim.getHostAddress(), msg, 3, "192.168.0.5");
                 
                 handleMessage.SendMessage(dataPesan, addr);
             }
@@ -55,6 +55,10 @@ public class InputClient
         {
             ex.printStackTrace();
         }
+//        catch (NullPointerException e)
+//        {
+//            
+//        }
     }
     
 }
