@@ -11,6 +11,8 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -23,6 +25,7 @@ public class HandleMessage extends Thread
     final static String INET_ADDR = "228.5.6.7";
     final static int PORT = 4321;
     
+    List<message> bufferMessage = new ArrayList<message>();
     
     public void SendMessage(message msg, InetAddress addr) throws InterruptedException
     {
@@ -73,6 +76,22 @@ public class HandleMessage extends Thread
         return alamatku.getHostAddress();
     }
     
+    public boolean CekIdPesan(message pesan){
+        int flag = 0;
+        for(int i=0;i<bufferMessage.size();i++)
+        {
+            if(bufferMessage.get(i).getId()==pesan.getId())
+            {
+                flag++;
+            }
+        }
+        
+        if(flag==0)
+            return false;
+        else 
+            return true;
+    }
+    
     public void run ()
     {
 
@@ -101,20 +120,33 @@ public class HandleMessage extends Thread
                 ObjectInputStream is = new ObjectInputStream(in);
                 
                 message pesan = (message) is.readObject();
-                pesan.updateLompatan();
-                if(pesan.getLompatan() > 0 )
+                //pesan.updateLompatan();
+                
+                if (CekIdPesan(pesan) == false)
                 {
-                    
+                    System.out.println("You have a message: " + pesan.getSemua());
+                    bufferMessage.add(pesan);
                     if (CekPenerima(pesan.getPenerima(), CekAlamatku()) == false)
                     {
                         SendMessage(pesan, address);
-                        pesan.lihatLompatan();
+                        //pesan.lihatLompatan();
+                    }
+                }
+                
+                /*
+                if(pesan.getLompatan() > 0 )
+                {
+                    if (CekPenerima(pesan.getPenerima(), CekAlamatku()) == false)
+                    {
+                        SendMessage(pesan, address);
+                        //pesan.lihatLompatan();
                     }
                     
                 }
+                * */
                 //String msg = new String(buf, 0, buf.length);
                 //msg = msg.trim();
-                System.out.println("You have a message: " + pesan.getSemua());
+                //System.out.println("You have a message: " + pesan.getSemua());
             }
         } 
         catch (IOException ex) 
@@ -124,6 +156,6 @@ public class HandleMessage extends Thread
             Logger.getLogger(HandleMessage.class.getName()).log(Level.SEVERE, null, ex);
         } catch (InterruptedException ex) {
             Logger.getLogger(HandleMessage.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        } 
     }
 }

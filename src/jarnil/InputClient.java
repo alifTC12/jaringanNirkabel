@@ -45,8 +45,9 @@ public class InputClient
                 
                 //Date waktu = new Date();
                 //SimpleDateFormat formatter = new SimpleDateFormat(pola);
+                int id_pesan=1;
                 InetAddress pengirim = InetAddress.getLocalHost();
-                message dataPesan = new message(pengirim.getHostAddress(), msg, 3, "192.168.0.5");
+                message dataPesan = new message(id_pesan, pengirim.getHostAddress(), msg, "192.168.0.5");
                 
                 handleMessage.SendMessage(dataPesan, addr);
             }

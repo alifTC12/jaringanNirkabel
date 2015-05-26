@@ -1,39 +1,41 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package jarnil;
 
 import java.io.Serializable;
 import java.net.InetAddress;
 import java.util.ArrayList;
-
+import java.util.List;
 /**
  *
  * @author Fandazky23
  */
 public class message implements Serializable{
+    int id_pesan;
     String pesan; 
-    String pengirim;
+    List<String> pengirim = new ArrayList<String>();
     String penerima;
     int lompatan;
     message()
     {
         
     }
-    message(String pengirim, String pesan, int lompatan, String penerima)
+    message(int id, String pengirim, String pesan, String penerima)
     {
+        this.id_pesan = id;
         this.pesan = pesan;
-        this.pengirim = pengirim;
-        this.lompatan = lompatan;
+        this.pengirim.add(pengirim);
+        //this.lompatan = lompatan;
         this.penerima = penerima;
     }
 
+    public int getId() {
+        return id_pesan;
+    }
+    
     public String getPesan() {
         return pesan;
     }
 
-    public String getPengirim() {
+    public List<String> getPengirim() {
         return pengirim;
     }
 
@@ -55,8 +57,11 @@ public class message implements Serializable{
         return pengirim + " >> pesan: "+ pesan;
     }
     
+    
+    /*
     public void lihatLompatan()
     {
         System.out.println(this.lompatan);
     }
+    * */
 }
