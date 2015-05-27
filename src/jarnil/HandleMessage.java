@@ -22,8 +22,8 @@ import java.util.logging.Logger;
  */
 public class HandleMessage extends Thread
 {
-    final static String INET_ADDR = "228.5.6.7";
-    final static int PORT = 4321;
+    final static String INET_ADDR = "228.5.6.9";
+    final static int PORT = 5678;
     
     List<message> bufferMessage = new ArrayList<message>();
     

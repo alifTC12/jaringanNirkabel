@@ -15,7 +15,9 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Random;
 import java.util.Scanner;
+import java.util.UUID;
 
 /**
  *
@@ -24,8 +26,8 @@ import java.util.Scanner;
 public class InputClient 
 {
 
-    final static String INET_ADDR = "228.5.6.7";
-    final static int PORT = 4321;
+    final static String INET_ADDR = "228.5.6.9";
+    final static int PORT = 5678;
     static private HandleMessage handleMessage =new HandleMessage();;
     
     
@@ -37,17 +39,21 @@ public class InputClient
         handleMessage.start();
         try (DatagramSocket serverSocket = new DatagramSocket()) 
         {
-            
+            //int a =0;
             Scanner in = new Scanner(System.in);
+            Random generator = new Random(); 
             while(true) 
             {
+                //a++;
+                
+                int i = generator.nextInt(1000000000) + 1;
                 msg = in.nextLine();
                 
                 //Date waktu = new Date();
                 //SimpleDateFormat formatter = new SimpleDateFormat(pola);
-                int id_pesan=1;
+               
                 InetAddress pengirim = InetAddress.getLocalHost();
-                message dataPesan = new message(id_pesan, pengirim.getHostAddress(), msg, "192.168.0.5");
+                message dataPesan = new message(i,pengirim.getHostAddress(), msg, "192.168.137.155");
                 
                 handleMessage.SendMessage(dataPesan, addr);
             }

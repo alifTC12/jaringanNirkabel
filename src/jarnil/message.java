@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 /**
  *
  * @author Fandazky23
@@ -21,6 +22,7 @@ public class message implements Serializable{
     message(int id, String pengirim, String pesan, String penerima)
     {
         this.id_pesan = id;
+        System.out.println(id_pesan);
         this.pesan = pesan;
         this.pengirim.add(pengirim);
         //this.lompatan = lompatan;
