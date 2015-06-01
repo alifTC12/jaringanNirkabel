@@ -1,9 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package jarnil;
 
 import java.io.ByteArrayOutputStream;
@@ -19,10 +13,7 @@ import java.util.Random;
 import java.util.Scanner;
 import java.util.UUID;
 
-/**
- *
- * @author alif.sip
- */
+
 public class InputClient 
 {
 
@@ -55,7 +46,10 @@ public class InputClient
                 InetAddress pengirim = InetAddress.getLocalHost();
                 message dataPesan = new message(i,pengirim.getHostAddress(), msg, "192.168.137.155");
                 
-                handleMessage.SendMessage(dataPesan, addr);
+                handleMessage.isiBufferMessage(dataPesan);
+                handleMessage.bufferId.add(i);
+                //handleMessage.SendMessage(dataPesan, addr);
+                handleMessage.SendMessage();
             }
         } 
         catch (IOException ex) 

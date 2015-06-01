@@ -14,55 +14,55 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-/**
- *
- * @author alif.sip
- */
+
 public class HandleMessage extends Thread
 {
     final static String INET_ADDR = "228.5.6.9";
     final static int PORT = 5678;
     
     List<message> bufferMessage = new ArrayList<message>();
+    List<Integer> bufferId = new ArrayList<Integer>();
     
-    public void SendMessage(message msg, InetAddress addr) throws InterruptedException
-    {
-        
-        try (DatagramSocket serverSocket = new DatagramSocket()) 
+    class SendMessage extends TimerTask{
+        public void run() 
         {
-            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-            ObjectOutputStream os = new ObjectOutputStream(outputStream);
-            os.writeObject(msg);
-            byte[] data = outputStream.toByteArray();
-            DatagramPacket msgPacket = new DatagramPacket(data,data.length, addr, PORT);
-            serverSocket.send(msgPacket);
-     
-        } 
-        catch (IOException ex) 
-        {
-            ex.printStackTrace();
+            if(bufferMessage.size()>0)
+            {
+                for(int i=0;i<bufferMessage.size();i++)
+                {
+                    try (DatagramSocket serverSocket = new DatagramSocket()) 
+                    {
+                        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+                        ObjectOutputStream os = new ObjectOutputStream(outputStream);
+                        os.writeObject(bufferMessage.get(i));
+                        byte[] data = outputStream.toByteArray();
+                        DatagramPacket msgPacket = new DatagramPacket(data, data.length, InetAddress.getByName(INET_ADDR), PORT);
+                        serverSocket.send(msgPacket);
+
+                    } 
+                    catch (IOException ex) 
+                    {
+                        ex.printStackTrace();
+                    }
+                }
+            }
+            else
+            {
+                return;
+            }
         }
     }
     
-    public void ResendMessage(message msg)
+    public void SendMessage() throws InterruptedException
     {
-        try (DatagramSocket serverSocket = new DatagramSocket()) 
-        {
-            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-            ObjectOutputStream os = new ObjectOutputStream(outputStream);
-            os.writeObject(msg);
-            byte[] data = outputStream.toByteArray();
-            DatagramPacket msgPacket = new DatagramPacket(data,data.length, InetAddress.getByName(INET_ADDR), PORT);
-            serverSocket.send(msgPacket);
-     
-        } 
-        catch (IOException ex) 
-        {
-            ex.printStackTrace();
-        }
+        Timer timer = new Timer();
+        timer.schedule(new SendMessage(), 0, 3000);
     }
+    
      
     public boolean CekPenerima(String penerima, String alamatku)
     {
@@ -90,6 +90,11 @@ public class HandleMessage extends Thread
             return false;
         else 
             return true;
+    }
+    
+    public void isiBufferMessage(message pesan)
+    {
+        this.bufferMessage.add(pesan);
     }
     
     public void run ()
@@ -128,8 +133,9 @@ public class HandleMessage extends Thread
                     bufferMessage.add(pesan);
                     if (CekPenerima(pesan.getPenerima(), CekAlamatku()) == false)
                     {
-                        SendMessage(pesan, address);
+//                        SendMessage(pesan, address);
                         //pesan.lihatLompatan();
+                        SendMessage();
                     }
                 }
                 

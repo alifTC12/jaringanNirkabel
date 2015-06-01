@@ -22,7 +22,7 @@ public class message implements Serializable{
     message(int id, String pengirim, String pesan, String penerima)
     {
         this.id_pesan = id;
-        System.out.println(id_pesan);
+        //System.out.println(id_pesan);
         this.pesan = pesan;
         this.pengirim.add(pengirim);
         //this.lompatan = lompatan;
