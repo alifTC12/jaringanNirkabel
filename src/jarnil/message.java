@@ -1,31 +1,34 @@
 package jarnil;
 
 import java.io.Serializable;
-import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 /**
  *
  * @author Fandazky23
  */
 public class message implements Serializable{
-    int id_pesan;
-    String pesan; 
-    List<String> pengirim = new ArrayList<String>();
-    String penerima;
-    int lompatan;
+    private static long serialVersionUID = 2746996112706624547L;
+    private int id_pesan;
+    private String pesan; 
+    private List<String> pengirim = new ArrayList<String>();
+    private String penerima;
+    private int maxlompatan;
+    private long waktuPesan;
+    
     message()
     {
         
     }
-    message(int id, String pengirim, String pesan, String penerima)
+    message(long time, int lompatan,int id, String pengirim, String pesan, String penerima)
     {
+        this.maxlompatan = lompatan;
+        this.waktuPesan = time;
         this.id_pesan = id;
         //System.out.println(id_pesan);
         this.pesan = pesan;
         this.pengirim.add(pengirim);
-        //this.lompatan = lompatan;
+        //this.maxlompatan = maxlompatan;
         this.penerima = penerima;
     }
 
@@ -45,13 +48,13 @@ public class message implements Serializable{
         return penerima;
     }
 
-    public int getLompatan() {
-        return lompatan;
+    public int getmaxLompatan() {
+        return maxlompatan;
     }
     
     public int updateLompatan()
     {
-        return this.lompatan = lompatan - 1;
+        return this.maxlompatan = maxlompatan - 1;
     }
     
     public String getSemua()
