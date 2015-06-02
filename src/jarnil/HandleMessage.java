@@ -2,6 +2,7 @@ package jarnil;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.EOFException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -25,8 +26,9 @@ public class HandleMessage extends Thread
     
     List<message> bufferMessage = new ArrayList<message>();
     List<Integer> bufferId = new ArrayList<Integer>();
-    
+    //Timer timer = new Timer();
     class SendMessage extends TimerTask{
+
         public void run() 
         {
             if(bufferMessage.size()>0){
@@ -34,10 +36,14 @@ public class HandleMessage extends Thread
                 {
                     Date waktu = new Date();
                     long waktusekarang = waktu.getTime();
-                    if(waktusekarang - bufferMessage.get(i).getmaxLompatan() > 30000)
+                    
+                    if(waktusekarang - bufferMessage.get(i).getwaktuPesan() > 30000)
                     {
                         bufferMessage.remove(i);
+                        break;
                     }
+                    System.out.println("isi buffer :" + bufferMessage.size());
+                    System.out.println("waktu sekarang" + waktusekarang + "\nWaktu pesan :" + bufferMessage.get(i).getwaktuPesan());
                     try (DatagramSocket serverSocket = new DatagramSocket()) 
                     {
                         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
@@ -54,15 +60,19 @@ public class HandleMessage extends Thread
                      }
                 }
             }
+            else
+            {
+                System.out.println("buffer habis");
+                //return;
+            }
+
         }
     }
     
     public void SendMessage() throws InterruptedException
     {
-        if(bufferMessage.size()>0){
-            Timer timer = new Timer();
-            timer.schedule(new SendMessage(), 0, 3000);
-        }    
+        Timer timer = new Timer();
+        timer.schedule(new SendMessage(), 0, 3000); 
     }
     
      
@@ -132,16 +142,16 @@ public class HandleMessage extends Thread
                     System.out.println("You have a message: " + pesan.getSemua());
                     System.out.println("jumlah lompatan : " + pesan.getmaxLompatan());
                     bufferMessage.add(pesan);
-                    if (CekPenerima(pesan.getPenerima(), CekAlamatku()) == false && pesan.getmaxLompatan()>0)
+                    if (CekPenerima(pesan.getPenerima(), CekAlamatku()) == false/* && pesan.getmaxLompatan()>0*/)
                     {
                         SendMessage();
                     }
                 }
             }
         } 
-        catch (IOException ex) 
+        catch (IOException e) 
         {
-            ex.printStackTrace();
+            e.printStackTrace();
         } catch (ClassNotFoundException ex) {
             Logger.getLogger(HandleMessage.class.getName()).log(Level.SEVERE, null, ex);
         } catch (InterruptedException ex) {

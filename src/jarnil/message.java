@@ -62,7 +62,10 @@ public class message implements Serializable{
         return pengirim + " >> pesan: "+ pesan;
     }
     
-    
+    public long getwaktuPesan()
+    {
+        return waktuPesan;
+    }
     /*
     public void lihatLompatan()
     {

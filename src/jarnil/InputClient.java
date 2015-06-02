@@ -57,10 +57,6 @@ public class InputClient
         {
             ex.printStackTrace();
         }
-//        catch (NullPointerException e)
-//        {
-//            
-//        }
     }
     
 }
