@@ -26,9 +26,9 @@ public class HandleMessage extends Thread
     
     List<message> bufferMessage = new ArrayList<message>();
     List<Integer> bufferId = new ArrayList<Integer>();
-    //Timer timer = new Timer();
+    Timer timer = new Timer();
     class SendMessage extends TimerTask{
-
+        long wkt = System.currentTimeMillis();
         public void run() 
         {
             if(bufferMessage.size()>0){
@@ -63,7 +63,9 @@ public class HandleMessage extends Thread
             else
             {
                 System.out.println("buffer habis");
-                //return;
+                cancel();
+                //timer.cancel();
+                //timer.purge();
             }
 
         }
