@@ -2,6 +2,7 @@ package jarnil;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 /**
  *
@@ -10,17 +11,28 @@ import java.util.List;
 public class message implements Serializable{
     private static long serialVersionUID = 2746996112706624547L;
     private int id_pesan;
-    private String pesan; 
+    private String pesan, pembuatPesan; 
     private List<String> pengirim = new ArrayList<String>();
     private String penerima;
     private int maxlompatan;
     private long waktuPesan;
     
-    message()
+    message(String pembuatPesan)
     {
+        Date waktu = new Date();
         
+        this.maxlompatan = 2;
+        this.waktuPesan = waktu.getTime();;
+        this.id_pesan = 84145;
+        //System.out.println(id_pesan);
+        this.pesan = "pesan sudah sampai tujuan";
+        //this.pengirim.add(pengirim);
+        //this.maxlompatan = maxlompatan;
+        //this.penerima = penerima;
+        this.penerima = pembuatPesan;
     }
-    message(long time, int lompatan,int id, String pengirim, String pesan, String penerima)
+    
+    message(long time, int lompatan,int id, String pengirim, String pesan, String penerima, String pembuatPesan)
     {
         this.maxlompatan = lompatan;
         this.waktuPesan = time;
@@ -30,6 +42,7 @@ public class message implements Serializable{
         this.pengirim.add(pengirim);
         //this.maxlompatan = maxlompatan;
         this.penerima = penerima;
+        this.pembuatPesan = pembuatPesan;
     }
 
     public int getId() {
@@ -65,6 +78,14 @@ public class message implements Serializable{
     public long getwaktuPesan()
     {
         return waktuPesan;
+    }
+    
+    public String getPembuatPesan() {
+        return pembuatPesan;
+    }
+    
+    public void addPengirimUlang(String pengirim){
+        this.pengirim.add(pengirim);
     }
     /*
     public void lihatLompatan()

@@ -45,7 +45,7 @@ public class InputClient
                 
                 int lompatan = 2;
                 InetAddress pengirim = InetAddress.getLocalHost();
-                message dataPesan = new message(miliseconds,lompatan,i,pengirim.getHostAddress(), msg, "192.168.137.155");
+                message dataPesan = new message(miliseconds,lompatan,i,pengirim.getHostAddress(), msg, "192.168.173.3", pengirim.getHostAddress());
                 
                 handleMessage.isiBufferMessage(dataPesan);
                 handleMessage.bufferId.add(i);

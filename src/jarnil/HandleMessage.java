@@ -127,6 +127,7 @@ public class HandleMessage extends Thread
 
         try (MulticastSocket clientSocket = new MulticastSocket(PORT))
         {
+            InetAddress pengirimUlang = InetAddress.getLocalHost();
             clientSocket.joinGroup(address);
             byte[] buf = new byte[1024];
             while (true) 
@@ -147,9 +148,17 @@ public class HandleMessage extends Thread
                 {
                     System.out.println("You have a message: " + pesan.getSemua());
                     System.out.println("jumlah lompatan : " + pesan.getmaxLompatan());
+                    pesan.addPengirimUlang(pengirimUlang.getHostAddress());
                     bufferMessage.add(pesan);
                     if (CekPenerima(pesan.getPenerima(), CekAlamatku()) == false/* && pesan.getmaxLompatan()>0*/)
                     {
+                        SendMessage();
+                    }
+                    else 
+                    {   
+                        System.out.print("ya");
+                        message ack = new message(pesan.getPembuatPesan());
+                        bufferMessage.add(ack);
                         SendMessage();
                     }
                 }
