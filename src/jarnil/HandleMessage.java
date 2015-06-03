@@ -21,8 +21,8 @@ import java.util.logging.Logger;
 
 public class HandleMessage extends Thread
 {
-    final static String INET_ADDR = "228.5.6.9";
-    final static int PORT = 5670;
+    final static String INET_ADDR = "224.0.0.116";
+    final static int PORT = 8889;
     
     List<message> bufferMessage = new ArrayList<message>();
     List<Integer> bufferId = new ArrayList<Integer>();
@@ -43,12 +43,13 @@ public class HandleMessage extends Thread
                         break;
                     }
                     System.out.println("isi buffer :" + bufferMessage.size());
-                    System.out.println("waktu sekarang" + waktusekarang + "\nWaktu pesan :" + bufferMessage.get(i).getwaktuPesan());
+                    //System.out.println("waktu sekarang" + waktusekarang + "\nWaktu pesan :" + bufferMessage.get(i).getwaktuPesan());
                     try (DatagramSocket serverSocket = new DatagramSocket()) 
                     {
                         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
                         ObjectOutputStream os = new ObjectOutputStream(outputStream);
                         os.writeObject(bufferMessage.get(i));
+                        os.flush();
                         byte[] data = outputStream.toByteArray();
                         DatagramPacket msgPacket = new DatagramPacket(data, data.length, InetAddress.getByName(INET_ADDR), PORT);
                         serverSocket.send(msgPacket);
@@ -127,16 +128,19 @@ public class HandleMessage extends Thread
         try (MulticastSocket clientSocket = new MulticastSocket(PORT))
         {
             clientSocket.joinGroup(address);
-            byte[] buf = new byte[256];
+            byte[] buf = new byte[1024];
             while (true) 
             {
+                //System.out.println("masuk while true");
                 DatagramPacket msgPacket = new DatagramPacket(buf, buf.length);
                 clientSocket.receive(msgPacket);
                 byte[] data = msgPacket.getData();
                 ByteArrayInputStream in = new ByteArrayInputStream(data);
                 ObjectInputStream is = new ObjectInputStream(in);
                     
+                //System.out.println("akan di read");
                 message pesan = (message) is.readObject();
+                //System.out.println("sudah di read");
                 pesan.updateLompatan();
 
                 if (CekIdPesan(pesan) == false)
@@ -151,12 +155,15 @@ public class HandleMessage extends Thread
                 }
             }
         } 
-        catch (IOException e) 
+        catch (EOFException e) 
         {
-            e.printStackTrace();
+            System.out.println("paket tidak diterima");
+            //e.printStackTrace();
         } catch (ClassNotFoundException ex) {
             Logger.getLogger(HandleMessage.class.getName()).log(Level.SEVERE, null, ex);
         } catch (InterruptedException ex) {
+            Logger.getLogger(HandleMessage.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
             Logger.getLogger(HandleMessage.class.getName()).log(Level.SEVERE, null, ex);
         } 
     }

@@ -13,8 +13,8 @@ import java.util.Scanner;
 public class InputClient 
 {
 
-    final static String INET_ADDR = "228.5.6.9";
-    final static int PORT = 5670;
+    final static String INET_ADDR = "224.0.0.116";
+    final static int PORT = 8889;
    // static private HandleMessage handleMessage =new HandleMessage();
     
     
