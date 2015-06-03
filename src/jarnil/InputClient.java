@@ -13,8 +13,8 @@ import java.util.Scanner;
 public class InputClient 
 {
 
-    final static String INET_ADDR = "224.0.0.116";
-    final static int PORT = 8889;
+    final static String INET_ADDR = "224.0.0.117";
+    final static int PORT = 8899;
    // static private HandleMessage handleMessage =new HandleMessage();
     
     
@@ -45,7 +45,7 @@ public class InputClient
                 
                 int lompatan = 2;
                 InetAddress pengirim = InetAddress.getLocalHost();
-                message dataPesan = new message(miliseconds,lompatan,i,pengirim.getHostAddress(), msg, "192.168.173.3", pengirim.getHostAddress());
+                message dataPesan = new message(miliseconds,lompatan,i,/*pengirim.getHostAddress(),*/ msg, "192.168.173.3", pengirim.getHostAddress());
                 
                 handleMessage.isiBufferMessage(dataPesan);
                 handleMessage.bufferId.add(i);

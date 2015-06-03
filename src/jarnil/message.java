@@ -32,14 +32,14 @@ public class message implements Serializable{
         this.penerima = pembuatPesan;
     }
     
-    message(long time, int lompatan,int id, String pengirim, String pesan, String penerima, String pembuatPesan)
+    message(long time, int lompatan,int id, /*String pengirim,*/ String pesan, String penerima, String pembuatPesan)
     {
         this.maxlompatan = lompatan;
         this.waktuPesan = time;
         this.id_pesan = id;
         //System.out.println(id_pesan);
         this.pesan = pesan;
-        this.pengirim.add(pengirim);
+        //this.pengirim.add(pengirim);
         //this.maxlompatan = maxlompatan;
         this.penerima = penerima;
         this.pembuatPesan = pembuatPesan;
@@ -72,7 +72,7 @@ public class message implements Serializable{
     
     public String getSemua()
     {
-        return pengirim + " >> pesan: "+ pesan;
+        return pembuatPesan + " >> pesan: "+ pesan;
     }
     
     public long getwaktuPesan()
